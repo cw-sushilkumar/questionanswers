@@ -86,8 +86,6 @@ router.get("/v1/getRecentQuestions",(req, res) => {
   });
 });
 
-// this is our update method
-// this method overwrites existing data in our database
 router.post("/v1/getQuestionDetails/:qid", (req, res) => {
   const {qid} = req.params;
   if(!qid || qid <=0) {
@@ -192,7 +190,6 @@ router.post("/v1/getAnswersByIds/", (req, res) => {
   });
 });
 
-
 //get list of featured questions
 router.get("/v1/getFeaturedQuestions",(req, res) => {
   //get time
@@ -240,6 +237,49 @@ router.get("/v1/getFeaturedQuestions",(req, res) => {
     } else {
         return res.json({ success: true, data: data });
     }
+  });
+});
+
+
+router.get("/v1/getRelatedQuestions/:qid",(req, res) => {
+  const {qid} = req.params;
+  if(!qid || qid <=0) {
+    return res.json({ success: false, data: null,mgs : "Invalid QuestionId" });
+  }
+  let options  = {
+    "order": "desc",
+    "sort": "activity",
+    "site": "stackoverflow",
+  }
+  questions.related_questions(qid,options , (response) => {
+      if(response) {
+          response = JSON.parse(response);
+          response.items.forEach((val) => {
+              val._id = val.question_id;
+              val.owner._id = val.owner.user_id;
+              questions.answers_on_questions(val.question_id, {} , (resp) => { 
+                //get all answerIds
+                let re = JSON.parse(resp);
+                val.answers = [];
+                if(re && re.items && re.items.length > 0) {
+                  re.items.forEach((v) => {
+                    val.answers.push(v.answer_id);
+                  })
+                }
+                let que = new Questions(val);
+                que.save()
+                .then(doc => {
+                    console.log("Featured Question Saved Successfully");
+                    return true;
+                })
+                .catch(err => {
+                    console.log("Featured Question failed to save", err);
+                    return false;
+                })
+            });
+          });
+      }
+      return res.json({ success: true, data: response });
   });
 });
 
