@@ -39,7 +39,7 @@ router.get("/v1", (req, res) => {
 });
 
 //get list of questions recent ones top 10 questions for the page 
-router.get("/v1/getRecentQuestions", (req, res) => {
+router.get("/v1/getRecentQuestions",(req, res) => {
   Questions.find({}, (err, data) => {
     if (err) return res.json({ success: false, error: err });
     if(!data || data.length <= 0) {
