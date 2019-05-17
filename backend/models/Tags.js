@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// this will be our data base's data structure 
+//not needed as such 
 const TagsSchema = new Schema(
   {
     id: Number,

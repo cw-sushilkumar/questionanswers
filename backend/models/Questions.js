@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const User  = require('./User');
-const Tag  = require('./Tags')
 
 const QuestionSchema = new Schema(
   {
@@ -9,7 +8,7 @@ const QuestionSchema = new Schema(
     title: String,
     body: String,
     tags : [],
-    owner : [User],
+    owner : User,
     accepted_answer_id : Number,
     is_answered: Boolean,
     view_count: Number,
@@ -22,6 +21,8 @@ const QuestionSchema = new Schema(
     creation_date: Number,
     link: String,
     last_edit_date: Number,
+    bounty_amount: Number,
+    bounty_closes_date: Number,
     answers : [],
   },
   { timestamps: true }
