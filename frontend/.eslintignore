@@ -1,0 +1,5 @@
+.meteor
+packages
+.git
+node_modules
+public
